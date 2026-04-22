@@ -1,0 +1,29 @@
+name: Deploy ke GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Setiap kali kamu push ke branch main, dia akan otomatis update
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          
+      - name: Ambil Dependencies
+        run: flutter pub get
+        
+      - name: Build Web
+        run: flutter build web --release --base-href "/Apk-Dompet/"
+
+      - name: Deploy ke GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
